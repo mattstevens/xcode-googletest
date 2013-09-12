@@ -1,5 +1,8 @@
 #import "GoogleTestStub.h"
 
+/**
+ * A stub SenTest that simply returns the data provided in its initializer.
+ */
 @implementation GoogleTestStub {
     NSString *_name;
     unsigned int _count;
