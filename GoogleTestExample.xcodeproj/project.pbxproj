@@ -12,7 +12,6 @@
 		C9C671C817E1820400ED64D4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C671C717E1820400ED64D4 /* Cocoa.framework */; };
 		C9C671ED17E1821F00ED64D4 /* gtest-all.cc in Sources */ = {isa = PBXBuildFile; fileRef = C9C671EC17E1821F00ED64D4 /* gtest-all.cc */; };
 		C9C671F117E183E100ED64D4 /* libgtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C671C517E1820400ED64D4 /* libgtest.a */; };
-		C9C671FC17E1854400ED64D4 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C671FB17E1854400ED64D4 /* SenTestingKit.framework */; };
 		C9C6720E17E1864900ED64D4 /* libgtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C671C517E1820400ED64D4 /* libgtest.a */; };
 		C9C6722017E1876200ED64D4 /* GoogleTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9C6721D17E1876200ED64D4 /* GoogleTests.mm */; };
 		C9C6722117E1876200ED64D4 /* GoogleTestStub.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C6721F17E1876200ED64D4 /* GoogleTestStub.m */; };
@@ -75,10 +74,8 @@
 		C9C671CA17E1820400ED64D4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C9C671CB17E1820400ED64D4 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		C9C671CC17E1820400ED64D4 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
-		C9C671D817E1820500ED64D4 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		C9C671EC17E1821F00ED64D4 /* gtest-all.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "gtest-all.cc"; sourceTree = "<group>"; };
-		C9C671FA17E1854400ED64D4 /* TestBundle.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestBundle.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C9C671FB17E1854400ED64D4 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		C9C671FA17E1854400ED64D4 /* TestBundle.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestBundle.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9C671FF17E1854400ED64D4 /* TestBundle-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestBundle-Info.plist"; sourceTree = "<group>"; };
 		C9C6721D17E1876200ED64D4 /* GoogleTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GoogleTests.mm; sourceTree = "<group>"; };
 		C9C6721E17E1876200ED64D4 /* GoogleTestStub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleTestStub.h; sourceTree = "<group>"; };
@@ -119,7 +116,6 @@
 			files = (
 				C9BB83E617E1FEE0008820CF /* libdemo.a in Frameworks */,
 				C9C6720E17E1864900ED64D4 /* libgtest.a in Frameworks */,
-				C9C671FC17E1854400ED64D4 /* SenTestingKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,7 +152,7 @@
 			children = (
 				C9C671B117E0312F00ED64D4 /* standalone */,
 				C9C671C517E1820400ED64D4 /* libgtest.a */,
-				C9C671FA17E1854400ED64D4 /* TestBundle.octest */,
+				C9C671FA17E1854400ED64D4 /* TestBundle.xctest */,
 				C9BB83D617E1FDFD008820CF /* libdemo.a */,
 			);
 			name = Products;
@@ -184,8 +180,6 @@
 			isa = PBXGroup;
 			children = (
 				C9C671C717E1820400ED64D4 /* Cocoa.framework */,
-				C9C671D817E1820500ED64D4 /* XCTest.framework */,
-				C9C671FB17E1854400ED64D4 /* SenTestingKit.framework */,
 				C9C671C917E1820400ED64D4 /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -312,8 +306,8 @@
 			);
 			name = TestBundle;
 			productName = GoogleTestBundle;
-			productReference = C9C671FA17E1854400ED64D4 /* TestBundle.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = C9C671FA17E1854400ED64D4 /* TestBundle.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -556,26 +550,16 @@
 		C9C6720917E1854400ED64D4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = "Bundle/TestBundle-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
 		C9C6720A17E1854400ED64D4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = "Bundle/TestBundle-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};

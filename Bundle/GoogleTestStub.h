@@ -1,8 +1,8 @@
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface GoogleTestStub : SenTest
+@interface GoogleTestStub : XCTest
 
 + (instancetype)testCaseStubWithName:(NSString *)name suite:(NSString *)suiteName;
-+ (instancetype)testSuiteStubWithName:(NSString *)name testCaseCount:(unsigned int)count;
++ (instancetype)testSuiteStubWithName:(NSString *)name testCaseCount:(NSUInteger)count;
 
 @end

@@ -1,14 +1,14 @@
 #import "GoogleTestStub.h"
 
 /**
- * A stub SenTest that simply returns the data provided in its initializer.
+ * A stub XCTest that simply returns the data provided in its initializer.
  */
 @implementation GoogleTestStub {
     NSString *_name;
-    unsigned int _count;
+    NSUInteger _count;
 }
 
-- (id)initWithName:(NSString *)name testCaseCount:(unsigned int)count {
+- (id)initWithName:(NSString *)name testCaseCount:(NSUInteger)count {
     self = [super init];
     if (self) {
         _name = [name copy];
@@ -19,11 +19,11 @@
 }
 
 + (instancetype)testCaseStubWithName:(NSString *)name suite:(NSString *)suiteName {
-    NSString *senTestCompatibleName = [NSString stringWithFormat:@"-[%@ %@]", suiteName, name];
-    return [[self alloc] initWithName:senTestCompatibleName testCaseCount:1];
+    NSString *xcTestCompatibleName = [NSString stringWithFormat:@"-[%@ %@]", suiteName, name];
+    return [[self alloc] initWithName:xcTestCompatibleName testCaseCount:1];
 }
 
-+ (instancetype)testSuiteStubWithName:(NSString *)name testCaseCount:(unsigned int)count {
++ (instancetype)testSuiteStubWithName:(NSString *)name testCaseCount:(NSUInteger)count {
     return [[self alloc] initWithName:name testCaseCount:count];
 }
 
@@ -31,7 +31,7 @@
     return _name;
 }
 
-- (unsigned int)testCaseCount {
+- (NSUInteger)testCaseCount {
     return _count;
 }
 
