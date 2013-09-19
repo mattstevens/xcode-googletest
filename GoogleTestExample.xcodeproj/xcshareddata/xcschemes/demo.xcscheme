@@ -33,7 +33,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C9C671F917E1854400ED64D4"
-               BuildableName = "TestBundle.octest"
+               BuildableName = "TestBundle.xctest"
                BlueprintName = "TestBundle"
                ReferencedContainer = "container:GoogleTestExample.xcodeproj">
             </BuildableReference>
