@@ -78,7 +78,9 @@ private:
  * Instead this class acts as its own test suite and runs Google Test when performTest: is
  * called.
  */
-@implementation GoogleTests
+@implementation GoogleTests {
+    BOOL _disabled;
+}
 
 + (id)defaultTestSuite {
     return [[self alloc] init];
@@ -96,7 +98,31 @@ private:
     return (NSUInteger)testing::UnitTest::GetInstance()->test_to_run_count();
 }
 
+/**
+ * An empty method to support Xcode's test filtering.
+ *
+ * Xcode filters on an individual test level and identifies tests by examining its source
+ * index. An XCTestCase subclass without tests in the index is ignored for filtering
+ * purposes, so this method is included to provide Xcode with a test to filter on.
+ */
+- (void)testAll {
+}
+
+/**
+ * Called to support inverse filters.
+ *
+ * If the testAll test is included in the list then this class has been filtered out.
+ */
+- (void)removeTestsWithNames:(NSArray *)names {
+    NSString *filterName = [GoogleTestStub XCTestNameForSuiteName:[self name] testCaseName:NSStringFromSelector(@selector(testAll))];
+    _disabled = [names containsObject:filterName];
+}
+
 - (void)performTest:(XCTestRun *)testRun {
+    if (_disabled) {
+        return;
+    }
+
     // Pass the command-line arguments to Google Test to support the --gtest options
     NSArray *arguments = [[NSProcessInfo processInfo] arguments];
 

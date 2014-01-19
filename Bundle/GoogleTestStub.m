@@ -19,12 +19,16 @@
 }
 
 + (instancetype)testCaseStubWithName:(NSString *)name suite:(NSString *)suiteName {
-    NSString *xcTestCompatibleName = [NSString stringWithFormat:@"-[%@ %@]", suiteName, name];
+    NSString *xcTestCompatibleName = [self XCTestNameForSuiteName:suiteName testCaseName:name];
     return [[self alloc] initWithName:xcTestCompatibleName testCaseCount:1];
 }
 
 + (instancetype)testSuiteStubWithName:(NSString *)name testCaseCount:(NSUInteger)count {
     return [[self alloc] initWithName:name testCaseCount:count];
+}
+
++ (NSString *)XCTestNameForSuiteName:(NSString *)suiteName testCaseName:(NSString *)name {
+    return [NSString stringWithFormat:@"-[%@ %@]", suiteName, name];
 }
 
 - (NSString *)name {
