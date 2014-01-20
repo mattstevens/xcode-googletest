@@ -351,10 +351,10 @@ EXTRA_DIST = CHANGES CONTRIBUTORS LICENSE \
 	test/gtest-param-test2_test.cc test/gtest-param-test2_test.cc \
 	test/gtest-param-test_test.cc test/gtest-param-test_test.cc \
 	test/gtest-param-test_test.h test/gtest-port_test.cc \
-	test/gtest-printers_test.cc test/gtest-test-part_test.cc \
-	test/gtest-tuple_test.cc test/gtest-typed-test2_test.cc \
-	test/gtest-typed-test_test.cc test/gtest-typed-test_test.h \
-	test/gtest-unittest-api_test.cc \
+	test/gtest_premature_exit_test.cc test/gtest-printers_test.cc \
+	test/gtest-test-part_test.cc test/gtest-tuple_test.cc \
+	test/gtest-typed-test2_test.cc test/gtest-typed-test_test.cc \
+	test/gtest-typed-test_test.h test/gtest-unittest-api_test.cc \
 	test/gtest_break_on_failure_unittest_.cc \
 	test/gtest_catch_exceptions_test_.cc test/gtest_color_test_.cc \
 	test/gtest_env_var_test_.cc test/gtest_environment_test.cc \
