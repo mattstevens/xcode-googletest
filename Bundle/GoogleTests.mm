@@ -43,9 +43,14 @@ public:
         if (test_part_result.passed())
             return;
 
+        int lineNumber = test_part_result.line_number();
         NSString *path = [[NSString stringWithUTF8String:test_part_result.file_name()] stringByStandardizingPath];
         NSString *description = [NSString stringWithUTF8String:test_part_result.message()];
-        [testRun recordFailureInTest:(XCTestCase *)[testRun test] withDescription:description inFile:path atLine:test_part_result.line_number() expected:YES];
+        [testRun recordFailureInTest:(XCTestCase *)[testRun test]
+                     withDescription:description
+                              inFile:path
+                              atLine:(lineNumber >= 0 ? (NSUInteger)lineNumber : 0)
+                            expected:YES];
     }
 
     void OnTestEnd(const TestInfo& test_info) {
