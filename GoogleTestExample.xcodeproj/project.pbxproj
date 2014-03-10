@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A43A17D218CE3E7300816F02 /* GoogleTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = A43A17CF18CE3E7300816F02 /* GoogleTests.mm */; };
+		A43A17D318CE3E7300816F02 /* GoogleTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = A43A17CF18CE3E7300816F02 /* GoogleTests.mm */; };
+		A43A17D418CE3E7300816F02 /* GoogleTestStub.m in Sources */ = {isa = PBXBuildFile; fileRef = A43A17D118CE3E7300816F02 /* GoogleTestStub.m */; };
+		A43A17D518CE3E7300816F02 /* GoogleTestStub.m in Sources */ = {isa = PBXBuildFile; fileRef = A43A17D118CE3E7300816F02 /* GoogleTestStub.m */; };
 		C9959FB1188F91F50031BFA5 /* ExampleObjCTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C9959FB0188F91F50031BFA5 /* ExampleObjCTest.m */; };
 		C9959FB2188F91F50031BFA5 /* ExampleObjCTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C9959FB0188F91F50031BFA5 /* ExampleObjCTest.m */; };
 		C9BB83E617E1FEE0008820CF /* libdemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9BB83D617E1FDFD008820CF /* libdemo.a */; };
@@ -15,8 +19,6 @@
 		C9C671ED17E1821F00ED64D4 /* gtest-all.cc in Sources */ = {isa = PBXBuildFile; fileRef = C9C671EC17E1821F00ED64D4 /* gtest-all.cc */; };
 		C9C671F117E183E100ED64D4 /* libgtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C671C517E1820400ED64D4 /* libgtest.a */; };
 		C9C6720E17E1864900ED64D4 /* libgtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C671C517E1820400ED64D4 /* libgtest.a */; };
-		C9C6722017E1876200ED64D4 /* GoogleTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9C6721D17E1876200ED64D4 /* GoogleTests.mm */; };
-		C9C6722117E1876200ED64D4 /* GoogleTestStub.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C6721F17E1876200ED64D4 /* GoogleTestStub.m */; };
 		C9E7389117E1FF080077AEC5 /* libdemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9BB83D617E1FDFD008820CF /* libdemo.a */; };
 		C9E7389417E205450077AEC5 /* Counter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E7389217E205450077AEC5 /* Counter.cpp */; };
 		C9E7389517E205450077AEC5 /* Counter.h in Headers */ = {isa = PBXBuildFile; fileRef = C9E7389317E205450077AEC5 /* Counter.h */; };
@@ -29,8 +31,6 @@
 		C9F82160188CF81C00DC1008 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9F8211D188CF70700DC1008 /* XCTest.framework */; };
 		C9F82161188CF81C00DC1008 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9F8210F188CF70600DC1008 /* Foundation.framework */; };
 		C9F82162188CF81C00DC1008 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9F82120188CF70700DC1008 /* UIKit.framework */; };
-		C9F82171188CF86300DC1008 /* GoogleTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9C6721D17E1876200ED64D4 /* GoogleTests.mm */; };
-		C9F82172188CF86700DC1008 /* GoogleTestStub.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C6721F17E1876200ED64D4 /* GoogleTestStub.m */; };
 		C9F82173188CF86D00DC1008 /* CounterTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C9E7389617E205E30077AEC5 /* CounterTest.cpp */; };
 		C9F82174188CF8D300DC1008 /* libdemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9F82138188CF7AB00DC1008 /* libdemo.a */; };
 		C9F82175188CF8D700DC1008 /* libgtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9F8210E188CF70600DC1008 /* libgtest.a */; };
@@ -112,6 +112,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A43A17CF18CE3E7300816F02 /* GoogleTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GoogleTests.mm; sourceTree = "<group>"; };
+		A43A17D018CE3E7300816F02 /* GoogleTestStub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleTestStub.h; sourceTree = "<group>"; };
+		A43A17D118CE3E7300816F02 /* GoogleTestStub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleTestStub.m; sourceTree = "<group>"; };
 		C9959FB0188F91F50031BFA5 /* ExampleObjCTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleObjCTest.m; sourceTree = "<group>"; };
 		C9BB83D617E1FDFD008820CF /* libdemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libdemo.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9C671B117E0312F00ED64D4 /* standalone */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = standalone; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -124,9 +127,6 @@
 		C9C671EC17E1821F00ED64D4 /* gtest-all.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "gtest-all.cc"; sourceTree = "<group>"; };
 		C9C671FA17E1854400ED64D4 /* TestBundle.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestBundle.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9C671FF17E1854400ED64D4 /* TestBundle-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestBundle-Info.plist"; sourceTree = "<group>"; };
-		C9C6721D17E1876200ED64D4 /* GoogleTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GoogleTests.mm; sourceTree = "<group>"; };
-		C9C6721E17E1876200ED64D4 /* GoogleTestStub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleTestStub.h; sourceTree = "<group>"; };
-		C9C6721F17E1876200ED64D4 /* GoogleTestStub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleTestStub.m; sourceTree = "<group>"; };
 		C9E7389217E205450077AEC5 /* Counter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Counter.cpp; path = DemoLib/Counter.cpp; sourceTree = "<group>"; };
 		C9E7389317E205450077AEC5 /* Counter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Counter.h; path = DemoLib/Counter.h; sourceTree = "<group>"; };
 		C9E7389617E205E30077AEC5 /* CounterTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CounterTest.cpp; path = DemoLib/CounterTest.cpp; sourceTree = "<group>"; };
@@ -203,6 +203,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A43A17CE18CE3E7300816F02 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				A43A17CF18CE3E7300816F02 /* GoogleTests.mm */,
+				A43A17D018CE3E7300816F02 /* GoogleTestStub.h */,
+				A43A17D118CE3E7300816F02 /* GoogleTestStub.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
 		C9BB83DA17E1FE22008820CF /* Demo Library */ = {
 			isa = PBXGroup;
 			children = (
@@ -286,9 +296,7 @@
 			isa = PBXGroup;
 			children = (
 				C9959FB0188F91F50031BFA5 /* ExampleObjCTest.m */,
-				C9C6721D17E1876200ED64D4 /* GoogleTests.mm */,
-				C9C6721E17E1876200ED64D4 /* GoogleTestStub.h */,
-				C9C6721F17E1876200ED64D4 /* GoogleTestStub.m */,
+				A43A17CE18CE3E7300816F02 /* Classes */,
 				C9C671FE17E1854400ED64D4 /* Supporting Files */,
 			);
 			name = "Test Bundle";
@@ -556,9 +564,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9E7389817E205E30077AEC5 /* CounterTest.cpp in Sources */,
-				C9C6722117E1876200ED64D4 /* GoogleTestStub.m in Sources */,
+				A43A17D418CE3E7300816F02 /* GoogleTestStub.m in Sources */,
 				C9959FB1188F91F50031BFA5 /* ExampleObjCTest.m in Sources */,
-				C9C6722017E1876200ED64D4 /* GoogleTests.mm in Sources */,
+				A43A17D218CE3E7300816F02 /* GoogleTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -583,9 +591,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9F82173188CF86D00DC1008 /* CounterTest.cpp in Sources */,
-				C9F82172188CF86700DC1008 /* GoogleTestStub.m in Sources */,
+				A43A17D518CE3E7300816F02 /* GoogleTestStub.m in Sources */,
 				C9959FB2188F91F50031BFA5 /* ExampleObjCTest.m in Sources */,
-				C9F82171188CF86300DC1008 /* GoogleTests.mm in Sources */,
+				A43A17D318CE3E7300816F02 /* GoogleTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
