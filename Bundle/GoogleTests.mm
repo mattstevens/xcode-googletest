@@ -95,6 +95,9 @@ private:
 };
 
 @interface GoogleTests : XCTestCase
+
+@property (readwrite, assign, nonatomic) BOOL disabled;
+
 @end
 
 /**
@@ -106,8 +109,7 @@ private:
  * Instead this class acts as its own test suite and runs Google Test when performTest: is
  * called.
  */
-@implementation GoogleTests {
-    BOOL _disabled;
+@implementation GoogleTests
 }
 
 + (id)defaultTestSuite {
@@ -143,11 +145,11 @@ private:
  */
 - (void)removeTestsWithNames:(NSArray *)names {
     NSString *filterName = [GoogleTestStub XCTestNameForSuiteName:[self name] testCaseName:NSStringFromSelector(@selector(testAll))];
-    _disabled = [names containsObject:filterName];
+    self.disabled = [names containsObject:filterName];
 }
 
 - (void)performTest:(XCTestRun *)testRun {
-    if (_disabled) {
+    if (self.disabled) {
         return;
     }
 
