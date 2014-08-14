@@ -30,6 +30,8 @@ using testing::TestInfo;
 using testing::TestPartResult;
 using testing::UnitTest;
 
+static NSString * const GoogleTestDisabledPrefix = @"DISABLED_";
+
 /**
  * A Google Test listener that reports failures to XCTest.
  */
@@ -144,23 +146,47 @@ private:
     delete listeners.Release(listeners.default_result_printer());
     free(argv);
 
+    BOOL runDisabledTests = testing::GTEST_FLAG(also_run_disabled_tests);
+
     XCTestSuite *testSuite = [GoogleTestSuite testSuiteWithName:NSStringFromClass([self class])];
 
     for (int testCaseIndex = 0; testCaseIndex < googleTest->total_test_case_count(); testCaseIndex++) {
         const TestCase *testCase = googleTest->GetTestCase(testCaseIndex);
         NSString *testCaseName = @(testCase->name());
 
-        // For typed tests Google Test uses '/' to separate the parts of the test case
-        // name. This is incompatible with Xcode's parsing and causes these tests not to
-        // appear in the UI propertly. Replace these characters in the class name reported
-        // to Xcode.
-        NSString *className = [testCaseName stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
+        // For typed tests '/' is used to separate the parts of the test case name.
+        NSArray *testCaseNameComponents = [testCaseName componentsSeparatedByString:@"/"];
+
+        if (runDisabledTests == NO) {
+            BOOL testCaseDisabled = NO;
+
+            for (NSString *component in testCaseNameComponents) {
+                if ([component hasPrefix:GoogleTestDisabledPrefix]) {
+                    testCaseDisabled = YES;
+                    break;
+                }
+            }
+
+            if (testCaseDisabled) {
+                continue;
+            }
+        }
+
+        // Xcode's parsing expects that the test's class and method names are valid
+        // Objective-C names. If they are not the tests will not be displayed properly in
+        // the UI. Join the test case name components with '_' rather than '/' to address
+        // this.
+        NSString *className = [testCaseNameComponents componentsJoinedByString:@"_"];
 
         XCTestSuite *testCaseSuite = [XCTestSuite testSuiteWithName:className];
 
         for (int testIndex = 0; testIndex < testCase->total_test_count(); testIndex++) {
             const TestInfo *testInfo = testCase->GetTestInfo(testIndex);
             NSString *testName = @(testInfo->name());
+            if (runDisabledTests == NO && [testName hasPrefix:GoogleTestDisabledPrefix]) {
+                continue;
+            }
+
             NSString *testFilter = [NSString stringWithFormat:@"%@.%@", testCaseName, testName];
 
             [testCaseSuite addTest:[[self alloc] initWithClassName:className
