@@ -147,6 +147,7 @@ private:
     free(argv);
 
     BOOL runDisabledTests = testing::GTEST_FLAG(also_run_disabled_tests);
+    NSCharacterSet *decimalDigitCharacterSet = [NSCharacterSet decimalDigitCharacterSet];
 
     XCTestSuite *testSuite = [GoogleTestSuite testSuiteWithName:NSStringFromClass([self class])];
 
@@ -187,10 +188,17 @@ private:
                 continue;
             }
 
+            // Google Test allows test names starting with a digit, prefix these with an
+            // underscore to create a valid method name.
+            NSString *methodName = testName;
+            if ([methodName length] > 0 && [decimalDigitCharacterSet characterIsMember:[methodName characterAtIndex:0]]) {
+                methodName = [@"_" stringByAppendingString:methodName];
+            }
+
             NSString *testFilter = [NSString stringWithFormat:@"%@.%@", testCaseName, testName];
 
             [testCaseSuite addTest:[[self alloc] initWithClassName:className
-                                                        methodName:testName
+                                                        methodName:methodName
                                                         testFilter:testFilter]];
         }
 
