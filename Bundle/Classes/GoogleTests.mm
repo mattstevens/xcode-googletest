@@ -25,6 +25,46 @@
 #import <gtest/gtest.h>
 #import "GoogleTestStub.h"
 
+@interface GoogleTestsNameUtility : NSObject
+
++ (NSString *)testNameForGoogleTestName:(const char *)googleTestName;
++ (NSString *)filterNameForTestName:(NSString *)testName;
+
+@end
+
+@implementation GoogleTestsNameUtility
+
++ (NSString *)testNameForGoogleTestName:(const char *)googleTestName {
+	NSString *testName = [NSString stringWithUTF8String:googleTestName];
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^a-zA-Z0-9_]"
+																		   options:0
+																			 error:nil];
+	testName = [regex stringByReplacingMatchesInString:testName
+											   options:NSAnchoredSearch
+												 range:NSMakeRange(0, testName.length)
+										  withTemplate:@"_"];
+	return testName;
+}
+
++ (NSString *)filterNameForTestName:(NSString *)testName {
+	NSString *filter = nil;
+	NSCharacterSet *bracketsCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"[]"];
+	if ([testName rangeOfCharacterFromSet:bracketsCharacterSet].location == NSNotFound) {
+		filter = [NSString stringWithFormat:@"%@.*", testName];
+	} else {
+		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^[-+]\\[(\\w+)\\s+(\\w+)\\]$"
+																			   options:0
+																				 error:nil];
+		filter = [regex stringByReplacingMatchesInString:testName
+												 options:NSAnchoredSearch
+												   range:NSMakeRange(0, testName.length)
+											withTemplate:@"$1.$2"];
+	}
+	return filter;
+}
+
+@end
+
 using testing::TestCase;
 using testing::TestInfo;
 using testing::TestResult;
@@ -49,7 +89,7 @@ public:
         testRun(nil) {}
 
     void OnTestCaseStart(const TestCase& test_case) {
-        NSString *name = [NSString stringWithUTF8String:test_case.name()];
+        NSString *name = [GoogleTestsNameUtility testNameForGoogleTestName:test_case.name()];
         XCTest *testSuite = [GoogleTestStub testSuiteStubWithName:name testCaseCount:(NSUInteger)test_case.test_to_run_count()];
         testSuiteRun = [[XCTestSuiteRun alloc] initWithTest:testSuite];
         [testSuiteRun start];
@@ -57,7 +97,7 @@ public:
 
     void OnTestStart(const TestInfo& test_info) {
         NSString *suite = [[testSuiteRun test] name];
-        NSString *name = [NSString stringWithUTF8String:test_info.name()];
+        NSString *name = [GoogleTestsNameUtility testNameForGoogleTestName:test_info.name()];
         testRun = [[XCTestCaseRun alloc] initWithTest:[GoogleTestStub testCaseStubWithName:name suite:suite]];
         [testRun start];
     }
@@ -89,12 +129,17 @@ public:
     }
 
 private:
+	
     XCTestSuiteRun *enclosingRun;
     XCTestSuiteRun *testSuiteRun;
     XCTestCaseRun *testRun;
 };
 
 @interface GoogleTests : XCTestCase
+
+@property (readwrite, copy, nonatomic) NSSet *negativeFilters;
+@property (readwrite, assign, nonatomic) BOOL disabled;
+
 @end
 
 /**
@@ -106,8 +151,14 @@ private:
  * Instead this class acts as its own test suite and runs Google Test when performTest: is
  * called.
  */
-@implementation GoogleTests {
-    BOOL _disabled;
+@implementation GoogleTests
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.negativeFilters = [NSSet set];
+    }
+    return self;
 }
 
 + (id)defaultTestSuite {
@@ -143,22 +194,40 @@ private:
  */
 - (void)removeTestsWithNames:(NSArray *)names {
     NSString *filterName = [GoogleTestStub XCTestNameForSuiteName:[self name] testCaseName:NSStringFromSelector(@selector(testAll))];
-    _disabled = [names containsObject:filterName];
+    self.disabled = [names containsObject:filterName];
+    self.negativeFilters = [[self class] negativeFiltersFromNames:names];
+}
+
++ (NSSet *)negativeFiltersFromNames:(NSArray *)names {
+    NSMutableSet *filters = [NSMutableSet set];
+    for (NSString *name in names) {
+        NSString *filter = [GoogleTestsNameUtility filterNameForTestName:name];
+        [filters addObject:filter];
+    }
+    return filters;
 }
 
 - (void)performTest:(XCTestRun *)testRun {
-    if (_disabled) {
+    if (self.disabled) {
         return;
     }
 
     // Pass the command-line arguments to Google Test to support the --gtest options
     NSArray *arguments = [[NSProcessInfo processInfo] arguments];
 
+    NSSet *filters = self.negativeFilters;
+    BOOL hasFilters = [filters count] != 0;
+    
     int i = 0;
-    int argc = (int)[arguments count];
+    int argc = (int)([arguments count] + (NSUInteger)hasFilters);
     const char **argv = (const char **)calloc((unsigned int)argc + 1, sizeof(const char *));
     for (NSString *arg in arguments) {
         argv[i++] = [arg UTF8String];
+    }
+    
+    if (hasFilters) {
+        NSString *filterString = [@"--gtest_filter=-" stringByAppendingString:[[filters allObjects] componentsJoinedByString:@":"]];
+        argv[i++] = [filterString UTF8String];
     }
 
     testing::InitGoogleTest(&argc, (char **)argv);
