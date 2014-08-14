@@ -236,10 +236,7 @@ private:
     listeners.Append(new XCTestPrinter((XCTestSuiteRun *)testRun));
     free(argv);
 
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wunused-result"
-    RUN_ALL_TESTS();
-    #pragma clang diagnostic pop
+    (void)RUN_ALL_TESTS();
 }
 
 @end
