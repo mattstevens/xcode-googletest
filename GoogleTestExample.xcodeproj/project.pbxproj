@@ -450,7 +450,7 @@
 		C9C671A917E0312F00ED64D4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = Alloysoft;
 				TargetAttributes = {
 					C9C671F917E1854400ED64D4 = {
@@ -620,6 +620,7 @@
 		C9BB83D817E1FDFD008820CF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -627,6 +628,7 @@
 		C9BB83D917E1FDFD008820CF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -634,7 +636,6 @@
 		C9C671B817E0312F00ED64D4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -670,7 +671,6 @@
 		C9C671B917E0312F00ED64D4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -719,6 +719,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					Dependencies/gtest,
@@ -731,6 +732,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					Dependencies/gtest,
@@ -742,6 +744,7 @@
 		C9C6720917E1854400ED64D4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "Bundle/TestBundle-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -750,6 +753,7 @@
 		C9C6720A17E1854400ED64D4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "Bundle/TestBundle-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -758,7 +762,6 @@
 		C9F8212E188CF70700DC1008 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -772,7 +775,6 @@
 		C9F8212F188CF70700DC1008 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -786,7 +788,6 @@
 		C9F82155188CF7AB00DC1008 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				PRODUCT_NAME = demo;
 				SDKROOT = iphoneos;
 			};
@@ -795,7 +796,6 @@
 		C9F82156188CF7AB00DC1008 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				PRODUCT_NAME = demo;
 				SDKROOT = iphoneos;
 			};
@@ -804,7 +804,6 @@
 		C9F8216F188CF81C00DC1008 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -819,7 +818,6 @@
 		C9F82170188CF81C00DC1008 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
