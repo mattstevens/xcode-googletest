@@ -116,6 +116,13 @@ private:
 }
 
 /**
+ * Returns the test name logged to the console for this test.
+ */
+- (NSString *)nameForLegacyLogging {
+    return _name;
+}
+
+/**
  * Returns the class name reported to Xcode for this test.
  */
 - (NSString *)testClassName {
