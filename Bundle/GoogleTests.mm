@@ -45,7 +45,8 @@ public:
             return;
 
         int lineNumber = test_part_result.line_number();
-        NSString *path = [@(test_part_result.file_name()) stringByStandardizingPath];
+        const char *fileName = test_part_result.file_name();
+        NSString *path = fileName ? [@(fileName) stringByStandardizingPath] : nil;
         NSString *description = @(test_part_result.message());
         [_testCase recordFailureWithDescription:description
                                          inFile:path
