@@ -450,7 +450,7 @@
 		C9C671A917E0312F00ED64D4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Alloysoft;
 				TargetAttributes = {
 					C9C671F917E1854400ED64D4 = {
@@ -650,6 +650,7 @@
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -746,6 +747,7 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "Bundle/TestBundle-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.codeworkshop.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -755,6 +757,7 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "Bundle/TestBundle-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.codeworkshop.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -810,6 +813,7 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				INFOPLIST_FILE = "Bundle/TestBundle-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.codeworkshop.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = TestBundle;
 				SDKROOT = iphoneos;
 			};
@@ -824,6 +828,7 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				INFOPLIST_FILE = "Bundle/TestBundle-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.codeworkshop.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = TestBundle;
 				SDKROOT = iphoneos;
 			};
