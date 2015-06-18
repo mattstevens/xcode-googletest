@@ -78,13 +78,44 @@ private:
 };
 
 /**
+ * Registers an XCTestCase subclass for each Google Test case.
+ *
+ * Generating these classes allows Google Test cases to be represented as peers
+ * of standard XCTest suites and supports filtering of test runs to specific
+ * Google Test cases or individual tests via Xcode.
+ */
+@interface GoogleTestLoader : NSObject
+@end
+
+/**
+ * Base class for the generated classes for Google Test cases.
+ */
+@interface GoogleTestCase : XCTestCase
+@end
+
+@implementation GoogleTestCase
+
+/**
+ * Associates generated Google Test classes with the test bundle.
+ *
+ * This affects how the generated test cases are represented in reports. By
+ * associating the generated classes with a test bundle the Google Test cases
+ * appear to be part of the same test bundle that this source file is compiled
+ * into. Without this association they appear to be part of a bundle
+ * representing the directory of an internal Xcode tool that runs the tests.
+ */
++ (NSBundle *)bundleForClass {
+    return [NSBundle bundleForClass:[GoogleTestLoader class]];
+}
+
+/**
  * Implementation of +[XCTestCase testInvocations] that returns an array of test
  * invocations for each test method in the class.
  *
  * This differs from the standard implementation of testInvocations, which only
  * adds methods with a prefix of "test".
  */
-static NSArray *TestInvocations(id self, SEL _cmd) {
++ (NSArray *)testInvocations {
     NSMutableArray *invocations = [NSMutableArray array];
 
     unsigned int methodCount = 0;
@@ -102,6 +133,8 @@ static NSArray *TestInvocations(id self, SEL _cmd) {
 
     return invocations;
 }
+
+@end
 
 /**
  * Runs a single test.
@@ -124,16 +157,6 @@ static void RunTest(id self, SEL _cmd) {
     int totalTestsRun = googleTest->successful_test_count() + googleTest->failed_test_count();
     XCTAssertEqual(totalTestsRun, 1, @"Expected to run a single test for filter \"%@\"", testFilter);
 }
-
-/**
- * Registers an XCTestCase subclass for each Google Test case.
- *
- * Generating these classes allows Google Test cases to be represented as peers
- * of standard XCTest suites and supports filtering of test runs to specific
- * Google Test cases or individual tests via Xcode.
- */
-@interface GoogleTestLoader : NSObject
-@end
 
 @implementation GoogleTestLoader
 
@@ -200,7 +223,7 @@ static void RunTest(id self, SEL _cmd) {
         // a valid class name.
         NSString *className = [GeneratedClassPrefix stringByAppendingString:[testCaseNameComponents componentsJoinedByString:@"_"]];
 
-        Class testClass = objc_allocateClassPair([XCTestCase class], [className UTF8String], 0);
+        Class testClass = objc_allocateClassPair([GoogleTestCase class], [className UTF8String], 0);
         NSAssert1(testClass, @"Failed to register Google Test class \"%@\", this class may already exist. The value of GeneratedClassPrefix can be changed to avoid this.", className);
         BOOL hasMethods = NO;
 
@@ -229,10 +252,6 @@ static void RunTest(id self, SEL _cmd) {
         }
 
         if (hasMethods) {
-            Class testMetaClass = object_getClass(testClass);
-            SEL invocationsSelector = @selector(testInvocations);
-            Method invocationsMethod = class_getClassMethod(testClass, invocationsSelector);
-            class_addMethod(testMetaClass, invocationsSelector, (IMP)TestInvocations, method_getTypeEncoding(invocationsMethod));
             objc_registerClassPair(testClass);
         } else {
             objc_disposeClassPair(testClass);
