@@ -85,6 +85,7 @@ private:
  * Google Test cases or individual tests via Xcode.
  */
 @interface GoogleTestLoader : NSObject
++ (void)registerTestClasses;
 @end
 
 /**
@@ -94,6 +95,11 @@ private:
 @end
 
 @implementation GoogleTestCase
+
++ (void)initialize
+{
+    [GoogleTestLoader registerTestClasses];
+}
 
 /**
  * Associates generated Google Test classes with the test bundle.
@@ -172,11 +178,15 @@ static void RunTest(id self, SEL _cmd) {
 + (void)load {
     NSBundle *bundle = [NSBundle bundleForClass:self];
     [[NSNotificationCenter defaultCenter] addObserverForName:NSBundleDidLoadNotification object:bundle queue:nil usingBlock:^(NSNotification *notification) {
-        [self registerTestClasses];
+        [GoogleTestCase initialize];
     }];
 }
 
 + (void)registerTestClasses {
+    if ([GoogleTestFilterMap count]) {
+        return;
+    }
+
     // Pass the command-line arguments to Google Test to support the --gtest options
     NSArray *arguments = [[NSProcessInfo processInfo] arguments];
 
@@ -240,6 +250,10 @@ static void RunTest(id self, SEL _cmd) {
             if ([methodName length] > 0 && [decimalDigitCharacterSet characterIsMember:[methodName characterAtIndex:0]]) {
                 methodName = [@"_" stringByAppendingString:methodName];
             }
+
+            // Google Test set test method name in parameterized tests to <name>/<index>.
+            // Replace / with a _ to create a valid method name.
+            methodName = [methodName stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
 
             NSString *testKey = [NSString stringWithFormat:@"%@.%@", className, methodName];
             NSString *testFilter = [NSString stringWithFormat:@"%@.%@", testCaseName, testName];
