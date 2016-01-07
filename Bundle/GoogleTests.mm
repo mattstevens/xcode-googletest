@@ -26,6 +26,12 @@
 #import <gtest/gtest.h>
 #import <objc/runtime.h>
 
+#include <cassert>
+#include "TargetConditionals.h"
+
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 using testing::TestCase;
 using testing::TestInfo;
 using testing::TestPartResult;
@@ -51,6 +57,11 @@ static NSString * const GeneratedClassPrefix = @"";
  */
 static NSDictionary *GoogleTestFilterMap;
 
+char file_output[512]{};
+char output_arg[512]{};
+NSString * testFilesPath = @"";
+NSString * filename = @"";
+
 /**
  * A Google Test listener that reports failures to XCTest.
  */
@@ -59,7 +70,7 @@ public:
     XCTestListener(XCTestCase *testCase) :
         _testCase(testCase) {}
 
-    void OnTestPartResult(const TestPartResult& test_part_result) {
+    void OnTestPartResult(const TestPartResult& test_part_result) override {
         if (test_part_result.passed())
             return;
 
@@ -72,7 +83,33 @@ public:
                                          atLine:(lineNumber >= 0 ? (NSUInteger)lineNumber : 0)
                                        expected:YES];
     }
+    
+    void OnTestProgramEnd(const UnitTest& unit_test) override {
+        assert( [filename length] != 0 );
+        
+        const char * owd = unit_test.original_working_dir();
+        NSString * fileSrc = [NSString stringWithFormat:@"%s/%@", owd, filename];
+        if ( [[NSFileManager defaultManager] isReadableFileAtPath:fileSrc] ) {
+            NSString * dirDst = [NSString stringWithFormat:@"%s/../../raw/", owd];
+            BOOL isDir;
+            if(![[NSFileManager defaultManager]  fileExistsAtPath:dirDst isDirectory:&isDir]) {
+                BOOL res = [[NSFileManager defaultManager]  createDirectoryAtPath:dirDst withIntermediateDirectories:YES attributes:nil error:NULL];
+                assert((res==YES) && "Error: Create folder failed");
+            }
 
+            NSString * fileDst = [NSString stringWithFormat:@"%@%@", dirDst, filename];
+            if ( [[NSFileManager defaultManager] isReadableFileAtPath:fileDst] ) {
+                BOOL res = [[NSFileManager defaultManager] removeItemAtPath:fileDst error:nil];
+                assert((res==YES) && "Error : cant remove file");
+            }
+            
+            BOOL res = [[NSFileManager defaultManager] copyItemAtPath:fileSrc toPath:fileDst error:nil];
+            assert((res==YES) && "Error: copy file failed");
+        } else {
+            assert(0);
+        }
+        
+    }
 private:
     XCTestCase *_testCase;
 };
@@ -170,6 +207,48 @@ static void RunTest(id self, SEL _cmd) {
  * observing the NSBundleDidLoadNotification for our own bundle.
  */
 + (void)load {
+    
+#ifdef MACRO_TEST_REPORT
+    snprintf(file_output, sizeof(file_output), "%s", TOSTRING(MACRO_TEST_REPORT));
+    snprintf(output_arg, sizeof(output_arg), "--gtest_output=xml:%s", file_output);
+    filename = [NSString stringWithCString:file_output encoding:NSASCIIStringEncoding];
+#else
+    assert(0);
+    return;
+#endif
+
+#ifdef MACRO_TEST_REPORT_DIR
+    
+    NSString * reportPath = @TOSTRING(MACRO_TEST_REPORT_DIR);
+
+    NSString * platform = nil;
+
+#if TARGET_OS_SIMULATOR
+    platform = @"IOS.Simulator";
+#else
+    platform = @"OSX";
+#endif
+    
+    testFilesPath = [NSString stringWithFormat:@"%@/%@/data/%@/", reportPath, platform, filename];
+
+    if ( [[NSFileManager defaultManager] isReadableFileAtPath:testFilesPath] ) {
+        BOOL res = [[NSFileManager defaultManager] removeItemAtPath:testFilesPath error:nil];
+        assert((res==YES) && "Error : cant remove directory");
+    }
+    
+    BOOL isDir;
+    NSFileManager *fileManager= [NSFileManager defaultManager];
+    if(![fileManager fileExistsAtPath:testFilesPath isDirectory:&isDir]) {
+        BOOL res = [fileManager createDirectoryAtPath:testFilesPath withIntermediateDirectories:YES attributes:nil error:NULL];
+        NSAssert1(res, @"Error: Create folder failed %@", testFilesPath);
+    }
+    BOOL res = [[NSFileManager defaultManager] changeCurrentDirectoryPath: testFilesPath];
+    NSAssert1(res, @"Failed to set current directory \"%@\"", testFilesPath);
+#else
+    assert(0);
+    return;
+#endif
+
     NSBundle *bundle = [NSBundle bundleForClass:self];
     [[NSNotificationCenter defaultCenter] addObserverForName:NSBundleDidLoadNotification object:bundle queue:nil usingBlock:^(NSNotification *notification) {
 
@@ -189,10 +268,12 @@ static void RunTest(id self, SEL _cmd) {
 
     int i = 0;
     int argc = (int)[arguments count];
-    const char **argv = (const char **)calloc((unsigned int)argc + 1, sizeof(const char *));
+    const char **argv = (const char **)calloc((unsigned int)argc + 2, sizeof(const char *));
     for (NSString *arg in arguments) {
         argv[i++] = [arg UTF8String];
     }
+    argc++;
+    argv[i++] = output_arg;
 
     testing::InitGoogleTest(&argc, (char **)argv);
     UnitTest *googleTest = UnitTest::GetInstance();
