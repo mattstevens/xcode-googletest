@@ -57,10 +57,29 @@ static NSString * const GeneratedClassPrefix = @"";
  */
 static NSDictionary *GoogleTestFilterMap;
 
-char file_output[512]{};
+char file_output_base[512]{};
 char output_arg[512]{};
 NSString * testFilesPath = @"";
 NSString * filename = @"";
+NSString * filenameCurrent = @"";
+
+
+static void deleteDir( id self, NSString * path ) {
+    if ( [[NSFileManager defaultManager] isReadableFileAtPath:path] ) {
+        BOOL res = [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
+        assert((res==YES) && "Error : cant remove directory");
+    }
+}
+static void createFreshDir( id self, NSString * path ) {
+    deleteDir( self, path );
+    
+    BOOL isDir;
+    NSFileManager *fileManager= [NSFileManager defaultManager];
+    if(![fileManager fileExistsAtPath:path isDirectory:&isDir]) {
+        BOOL res = [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
+        XCTAssertTrue(res, @"Error: Create folder failed %@", path);
+    }
+}
 
 /**
  * A Google Test listener that reports failures to XCTest.
@@ -86,9 +105,10 @@ public:
     
     void OnTestProgramEnd(const UnitTest& unit_test) override {
         assert( [filename length] != 0 );
+        assert( [filenameCurrent length] != 0 );
         
         const char * owd = unit_test.original_working_dir();
-        NSString * fileSrc = [NSString stringWithFormat:@"%s/%@", owd, filename];
+        NSString * fileSrc = [NSString stringWithFormat:@"%s/%@.xml", owd, filename];
         if ( [[NSFileManager defaultManager] isReadableFileAtPath:fileSrc] ) {
             NSString * dirDst = [NSString stringWithFormat:@"%s/../../raw/", owd];
             BOOL isDir;
@@ -97,7 +117,7 @@ public:
                 assert((res==YES) && "Error: Create folder failed");
             }
 
-            NSString * fileDst = [NSString stringWithFormat:@"%@%@", dirDst, filename];
+            NSString * fileDst = [NSString stringWithFormat:@"%@%@", dirDst, filenameCurrent];
             if ( [[NSFileManager defaultManager] isReadableFileAtPath:fileDst] ) {
                 BOOL res = [[NSFileManager defaultManager] removeItemAtPath:fileDst error:nil];
                 assert((res==YES) && "Error : cant remove file");
@@ -105,10 +125,11 @@ public:
             
             BOOL res = [[NSFileManager defaultManager] copyItemAtPath:fileSrc toPath:fileDst error:nil];
             assert((res==YES) && "Error: copy file failed");
+            
+            deleteDir(0, testFilesPath);
         } else {
             assert(0);
         }
-        
     }
 private:
     XCTestCase *_testCase;
@@ -173,6 +194,12 @@ private:
 
 @end
 
+static void impl_configureOutput(id self, SEL _cmd) {
+    filenameCurrent = [NSString stringWithFormat:@"%@.%@.%@.xml", filename, [self class], NSStringFromSelector(_cmd)];
+    
+    createFreshDir( self, testFilesPath );
+}
+
 /**
  * Runs a single test.
  */
@@ -185,6 +212,8 @@ static void RunTest(id self, SEL _cmd) {
     NSString *testFilter = GoogleTestFilterMap[testKey];
     XCTAssertNotNil(testFilter, @"No test filter found for test %@", testKey);
 
+    impl_configureOutput(self, _cmd);
+    
     testing::GTEST_FLAG(filter) = [testFilter UTF8String];
 
     (void)RUN_ALL_TESTS();
@@ -209,9 +238,9 @@ static void RunTest(id self, SEL _cmd) {
 + (void)load {
     
 #ifdef MACRO_TEST_REPORT
-    snprintf(file_output, sizeof(file_output), "%s", TOSTRING(MACRO_TEST_REPORT));
-    snprintf(output_arg, sizeof(output_arg), "--gtest_output=xml:%s", file_output);
-    filename = [NSString stringWithCString:file_output encoding:NSASCIIStringEncoding];
+    snprintf(file_output_base, sizeof(file_output_base), "%s", TOSTRING(MACRO_TEST_REPORT));
+    snprintf(output_arg, sizeof(output_arg), "--gtest_output=xml:%s.xml", file_output_base);
+    filename = [NSString stringWithCString:file_output_base encoding:NSASCIIStringEncoding];
 #else
     assert(0);
     return;
@@ -231,17 +260,8 @@ static void RunTest(id self, SEL _cmd) {
     
     testFilesPath = [NSString stringWithFormat:@"%@/%@/data/%@/", reportPath, platform, filename];
 
-    if ( [[NSFileManager defaultManager] isReadableFileAtPath:testFilesPath] ) {
-        BOOL res = [[NSFileManager defaultManager] removeItemAtPath:testFilesPath error:nil];
-        assert((res==YES) && "Error : cant remove directory");
-    }
-    
-    BOOL isDir;
-    NSFileManager *fileManager= [NSFileManager defaultManager];
-    if(![fileManager fileExistsAtPath:testFilesPath isDirectory:&isDir]) {
-        BOOL res = [fileManager createDirectoryAtPath:testFilesPath withIntermediateDirectories:YES attributes:nil error:NULL];
-        NSAssert1(res, @"Error: Create folder failed %@", testFilesPath);
-    }
+    createFreshDir( self, testFilesPath );
+
     BOOL res = [[NSFileManager defaultManager] changeCurrentDirectoryPath: testFilesPath];
     NSAssert1(res, @"Failed to set current directory \"%@\"", testFilesPath);
 #else
@@ -276,10 +296,11 @@ static void RunTest(id self, SEL _cmd) {
     argv[i++] = output_arg;
 
     testing::InitGoogleTest(&argc, (char **)argv);
+    free(argv);
+
     UnitTest *googleTest = UnitTest::GetInstance();
     testing::TestEventListeners& listeners = googleTest->listeners();
     delete listeners.Release(listeners.default_result_printer());
-    free(argv);
 
     BOOL runDisabledTests = testing::GTEST_FLAG(also_run_disabled_tests);
     NSMutableDictionary *testFilterMap = [NSMutableDictionary dictionary];
@@ -335,7 +356,7 @@ static void RunTest(id self, SEL _cmd) {
 
             SEL selector = sel_registerName([methodName UTF8String]);
             BOOL added = class_addMethod(testClass, selector, (IMP)RunTest, "v@:");
-            NSAssert1(added, @"Failed to add Goole Test method \"%@\", this method may already exist in the class.", methodName);
+            NSAssert1(added, @"Failed to add Google Test method \"%@\", this method may already exist in the class.", methodName);
             hasMethods = YES;
         }
 
