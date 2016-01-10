@@ -37,6 +37,16 @@ using testing::TestInfo;
 using testing::TestPartResult;
 using testing::UnitTest;
 
+NSString * uuidString() {
+    // Returns a UUID
+    
+    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
+    NSString *uuidString = (__bridge_transfer NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid);
+    CFRelease(uuid);
+    
+    return uuidString;
+}
+
 static NSString * const GoogleTestDisabledPrefix = @"DISABLED_";
 
 /**
@@ -60,9 +70,9 @@ static NSDictionary *GoogleTestFilterMap;
 char file_output_base[512]{};
 char output_arg[512]{};
 NSString * testFilesPath = @"";
+NSString * dataDir;
+NSString * fullDataDir;
 NSString * filename = @"";
-NSString * filenameCurrent = @"";
-
 
 static void deleteDir( id self, NSString * path ) {
     if ( [[NSFileManager defaultManager] isReadableFileAtPath:path] ) {
@@ -103,21 +113,26 @@ public:
                                        expected:YES];
     }
     
-    void OnTestProgramEnd(const UnitTest& unit_test) override {
+    void OnTestEnd(const TestInfo& info) override {
+        last_test_case = std::string( info.test_case_name() );
+        last_test = std::string( info.name() );
+    }
+    
+    void OnTestProgramEnd( const UnitTest & unit_test ) override {
         assert( [filename length] != 0 );
-        assert( [filenameCurrent length] != 0 );
+        assert( !last_test_case.empty() );
+        assert( !last_test.empty() );
         
-        const char * owd = unit_test.original_working_dir();
-        NSString * fileSrc = [NSString stringWithFormat:@"%s/%@.xml", owd, filename];
+        NSString * fileSrc = [NSString stringWithFormat:@"%@/%@/%@.xml", testFilesPath, dataDir, filename];
         if ( [[NSFileManager defaultManager] isReadableFileAtPath:fileSrc] ) {
-            NSString * dirDst = [NSString stringWithFormat:@"%s/../../raw/", owd];
+            NSString * dirDst = [NSString stringWithFormat:@"%@/%s/", testFilesPath, last_test_case.c_str()];
             BOOL isDir;
             if(![[NSFileManager defaultManager]  fileExistsAtPath:dirDst isDirectory:&isDir]) {
                 BOOL res = [[NSFileManager defaultManager]  createDirectoryAtPath:dirDst withIntermediateDirectories:YES attributes:nil error:NULL];
                 assert((res==YES) && "Error: Create folder failed");
             }
 
-            NSString * fileDst = [NSString stringWithFormat:@"%@%@", dirDst, filenameCurrent];
+            NSString * fileDst = [NSString stringWithFormat:@"%@%s.xml", dirDst, last_test.c_str()];
             if ( [[NSFileManager defaultManager] isReadableFileAtPath:fileDst] ) {
                 BOOL res = [[NSFileManager defaultManager] removeItemAtPath:fileDst error:nil];
                 assert((res==YES) && "Error : cant remove file");
@@ -126,13 +141,14 @@ public:
             BOOL res = [[NSFileManager defaultManager] copyItemAtPath:fileSrc toPath:fileDst error:nil];
             assert((res==YES) && "Error: copy file failed");
             
-            deleteDir(0, testFilesPath);
+            deleteDir(0, fullDataDir);
         } else {
             assert(0);
         }
     }
 private:
     XCTestCase *_testCase;
+    std::string last_test_case, last_test;
 };
 
 /**
@@ -194,12 +210,6 @@ private:
 
 @end
 
-static void impl_configureOutput(id self, SEL _cmd) {
-    filenameCurrent = [NSString stringWithFormat:@"%@.%@.%@.xml", filename, [self class], NSStringFromSelector(_cmd)];
-    
-    createFreshDir( self, testFilesPath );
-}
-
 /**
  * Runs a single test.
  */
@@ -212,7 +222,7 @@ static void RunTest(id self, SEL _cmd) {
     NSString *testFilter = GoogleTestFilterMap[testKey];
     XCTAssertNotNil(testFilter, @"No test filter found for test %@", testKey);
 
-    impl_configureOutput(self, _cmd);
+    createFreshDir( self, fullDataDir );
     
     testing::GTEST_FLAG(filter) = [testFilter UTF8String];
 
@@ -258,11 +268,15 @@ static void RunTest(id self, SEL _cmd) {
     platform = @"OSX";
 #endif
     
-    testFilesPath = [NSString stringWithFormat:@"%@/%@/data/%@/", reportPath, platform, filename];
+    testFilesPath = [NSString stringWithFormat:@"%@/%@/raw/%@/", reportPath, platform, filename];
 
     createFreshDir( self, testFilesPath );
 
-    BOOL res = [[NSFileManager defaultManager] changeCurrentDirectoryPath: testFilesPath];
+    dataDir = uuidString();
+    fullDataDir = [NSString stringWithFormat:@"%@/%@", testFilesPath, dataDir];
+    createFreshDir( self, fullDataDir );
+    
+    BOOL res = [[NSFileManager defaultManager] changeCurrentDirectoryPath: fullDataDir];
     NSAssert1(res, @"Failed to set current directory \"%@\"", testFilesPath);
 #else
     assert(0);
