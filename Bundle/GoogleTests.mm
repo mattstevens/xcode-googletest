@@ -268,7 +268,7 @@ static void RunTest(id self, SEL _cmd) {
     platform = @"OSX";
 #endif
     
-    testFilesPath = [NSString stringWithFormat:@"%@/%@/raw/%@/", reportPath, platform, filename];
+    testFilesPath = [NSString stringWithFormat:@"%@/%@/unmerged/%@/", reportPath, platform, filename];
 
     createFreshDir( self, testFilesPath );
 
