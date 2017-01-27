@@ -67,11 +67,11 @@ static NSString * const GeneratedClassPrefix = @"";
  */
 static NSDictionary *GoogleTestFilterMap;
 
-char file_output_base[512]{};
-char output_arg[512]{};
+char file_output_base[512] = {};
+char output_arg[512] = {};
 NSString * testFilesPath = @"";
-NSString * dataDir;
-NSString * fullDataDir;
+NSString * dataDir = @"";
+NSString * fullDataDir = @"";
 NSString * filename = @"";
 
 static void deleteDir( id self, NSString * path ) {
@@ -221,7 +221,7 @@ static void RunTest(id self, SEL _cmd) {
     NSString *testKey = [NSString stringWithFormat:@"%@.%@", [self class], NSStringFromSelector(_cmd)];
     NSString *testFilter = GoogleTestFilterMap[testKey];
     XCTAssertNotNil(testFilter, @"No test filter found for test %@", testKey);
-
+    XCTAssertNotNil(fullDataDir);
     createFreshDir( self, fullDataDir );
     
     testing::GTEST_FLAG(filter) = [testFilter UTF8String];
@@ -250,7 +250,7 @@ static void RunTest(id self, SEL _cmd) {
 #ifdef MACRO_TEST_REPORT
     snprintf(file_output_base, sizeof(file_output_base), "%s", TOSTRING(MACRO_TEST_REPORT));
     snprintf(output_arg, sizeof(output_arg), "--gtest_output=xml:%s.xml", file_output_base);
-    filename = [NSString stringWithCString:file_output_base encoding:NSASCIIStringEncoding];
+    filename = [[NSString alloc] initWithCString:file_output_base encoding:NSASCIIStringEncoding];
 #else
     assert(0);
     return;
@@ -268,12 +268,12 @@ static void RunTest(id self, SEL _cmd) {
     platform = @"OSX";
 #endif
     
-    testFilesPath = [NSString stringWithFormat:@"%@/%@/unmerged/%@/", reportPath, platform, filename];
+    testFilesPath = [[NSString alloc] initWithFormat:@"%@/%@/unmerged/%@/", reportPath, platform, filename];
 
     createFreshDir( self, testFilesPath );
 
     dataDir = uuidString();
-    fullDataDir = [NSString stringWithFormat:@"%@/%@", testFilesPath, dataDir];
+    fullDataDir = [[NSString alloc] initWithFormat:@"%@/%@", testFilesPath, dataDir];
     createFreshDir( self, fullDataDir );
     
     BOOL res = [[NSFileManager defaultManager] changeCurrentDirectoryPath: fullDataDir];
