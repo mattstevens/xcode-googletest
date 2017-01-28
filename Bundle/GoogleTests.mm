@@ -262,10 +262,11 @@ static void RunTest(id self, SEL _cmd) {
 
     NSString * platform = nil;
 
+    // keep those in sync with the ones in build.py !
 #if TARGET_OS_SIMULATOR
     platform = @"IOS.Simulator";
 #else
-    platform = @"OSX";
+    platform = @"OS.X";
 #endif
     
     testFilesPath = [[NSString alloc] initWithFormat:@"%@/%@/unmerged/%@/", reportPath, platform, filename];
