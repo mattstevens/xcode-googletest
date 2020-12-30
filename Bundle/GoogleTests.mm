@@ -63,14 +63,24 @@ public:
         if (test_part_result.passed())
             return;
 
-        int lineNumber = test_part_result.line_number();
+        NSInteger lineNumber = test_part_result.line_number();
+        lineNumber = lineNumber >= 0 ? lineNumber : 0;
         const char *fileName = test_part_result.file_name();
         NSString *path = fileName ? [@(fileName) stringByStandardizingPath] : nil;
         NSString *description = @(test_part_result.message());
-        [_testCase recordFailureWithDescription:description
-                                         inFile:path
-                                         atLine:(lineNumber >= 0 ? (NSUInteger)lineNumber : 0)
-                                       expected:YES];
+
+        XCTSourceCodeLocation *location = [[XCTSourceCodeLocation alloc] initWithFilePath:path
+                                                                               lineNumber:lineNumber];
+        XCTSourceCodeContext *context = [[XCTSourceCodeContext alloc] initWithLocation:location];
+
+        XCTIssue *issue = [[XCTIssue alloc] initWithType:XCTIssueTypeAssertionFailure
+                                      compactDescription:description
+                                     detailedDescription:nil
+                                       sourceCodeContext:context
+                                         associatedError:nil
+                                             attachments:@[]];
+
+        [_testCase recordIssue:issue];
     }
 
 private:
